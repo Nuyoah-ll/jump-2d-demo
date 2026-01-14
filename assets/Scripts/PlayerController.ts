@@ -27,7 +27,7 @@ export class PlayerController extends Component {
     bodyAnimation: Animation = null
 
     start() {
-        input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this)
+        // input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this)
     }
 
     // deltaTime为一帧的时间，单位为秒，当fps为60时，deltaTime为1/60=0.016667
@@ -52,6 +52,14 @@ export class PlayerController extends Component {
             }
         }
 
+    }
+
+    setInputActive(active: boolean) {
+        if (active) {
+            input.on(Input.EventType.MOUSE_UP, this.onMouseUp, this)
+        } else {
+            input.off(Input.EventType.MOUSE_UP, this.onMouseUp, this)
+        }
     }
 
     onMouseUp(event: EventMouse) {

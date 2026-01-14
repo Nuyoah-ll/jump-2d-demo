@@ -1,10 +1,16 @@
-import { _decorator, CCInteger, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, CCInteger, Component, instantiate, Label, Node, Prefab, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
-import { BLOCK_SIZE } from './PlayerController';
+import { BLOCK_SIZE, PlayerController } from './PlayerController';
 
 enum BlockType {
     BT_NONE,
     BT_STONE,
+}
+
+enum GameState {
+    GS_INIT,
+    GS_PLAYING,
+    GS_END
 }
 
 @ccclass('GameManager')
@@ -15,14 +21,70 @@ export class GameManager extends Component {
     @property({ type: CCInteger })
     roadLength: number = 50
 
+    @property(Node)
+    startMenu: Node = null
+
+    @property(Node)
+    resultMenu: Node = null
+
+    @property({ type: PlayerController })
+    playerController: PlayerController = null
+
+    @property(Label)
+    stepLabel: Label = null
+
     private _road: BlockType[] = [];
+    private _curState: GameState = GameState.GS_INIT;
 
     start() {
-        this.generateRoad();
+        this.init();
     }
 
     update(deltaTime: number) {
 
+    }
+
+    init() {
+        this._curState = GameState.GS_INIT;
+        if (this.startMenu) {
+            this.startMenu.active = true;
+        }
+        if (this.resultMenu) {
+            this.resultMenu.active = false;
+        }
+        if (this.playerController) {
+            this.playerController.setInputActive(false)
+            this.playerController.node.setPosition(Vec3.ZERO)
+        }
+        if (this.stepLabel) {
+            this.stepLabel.string = '0';
+        }
+    }
+
+    startPlaying() {
+        this._curState = GameState.GS_PLAYING;
+        if (this.startMenu) {
+            this.startMenu.active = false;
+        }
+        if (this.resultMenu) {
+            this.resultMenu.active = false;
+        }
+        setTimeout(() => {
+            this.playerController.setInputActive(true)
+            this.playerController.node.setPosition(Vec3.ZERO);
+        }, 300);
+        if (this.stepLabel) {
+            this.stepLabel.string = '0';
+        }
+        this.generateRoad();
+    }
+
+    onStartButtonClicked() {
+        this.startPlaying()
+    }
+
+    onRestartButtonClicked() {
+        this.startPlaying();
     }
 
     generateRoad() {
