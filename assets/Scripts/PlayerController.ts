@@ -21,6 +21,8 @@ export class PlayerController extends Component {
     private _deltaPos: Vec3 = new Vec3(0, 0, 0)
     // 目标位置
     private _targetPos: Vec3 = new Vec3()
+    // 当前移动到的索引
+    private _curMoveIndex: number = 0;
 
     // 通过property装饰器，可以在编辑器的PlayerController组件中暴露该属性，从而可以可视化的拖拽赋值，在本demo里，这里将Body的两个cc.Animation对象拖拽赋值给该属性
     @property(Animation)
@@ -39,6 +41,7 @@ export class PlayerController extends Component {
             if (this._curJumpTime >= this._jumpTime) {
                 this.node.setPosition(this._targetPos)
                 this._startJump = false
+                this.onOnceJumpEnd();
             } else {
                 // 基于节点的位置，更新_curPos属性，确保_curPos属性与节点的位置保持一致
                 // todo 这一步如果不要会怎么样
@@ -98,6 +101,18 @@ export class PlayerController extends Component {
                 this.bodyAnimation.play('twoStep')
             }
         }
+        // 跳跃结束后，更新当前移动到的索引
+        this._curMoveIndex += this._jumpStep;
+    }
+
+    onOnceJumpEnd() {
+        this.node.emit('JumpEnd', this._curMoveIndex);
+    }
+
+    reset() {
+        this._curMoveIndex = 0;
+        this._targetPos = new Vec3()
+        this._curPos = new Vec3()
     }
 }
 

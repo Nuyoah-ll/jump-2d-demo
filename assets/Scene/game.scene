@@ -538,6 +538,9 @@
     "stepLabel": {
       "__id__": 34
     },
+    "titleLabel": {
+      "__id__": 23
+    },
     "_id": "5bNcdsRfBIx4Ja7I+4o3Cx"
   },
   {
@@ -1366,7 +1369,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 129.98619342672413,
+      "width": 9.998937955901855,
       "height": 50.39999999999999
     },
     "_anchorPoint": {
@@ -1396,7 +1399,7 @@
       "b": 116,
       "a": 255
     },
-    "_string": "跳过的步数：x",
+    "_string": "x",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 23.5625,

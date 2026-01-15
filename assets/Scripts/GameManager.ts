@@ -33,11 +33,34 @@ export class GameManager extends Component {
     @property(Label)
     stepLabel: Label = null
 
+    @property(Label)
+    titleLabel: Label = null
+
     private _road: BlockType[] = [];
     private _curState: GameState = GameState.GS_INIT;
 
     start() {
         this.init();
+        this.playerController.node.on("JumpEnd", this.onJumpEnd, this);
+    }
+
+    onJumpEnd(moveIndex: number) {
+        this.checkResult(moveIndex);
+    }
+
+    checkResult(moveIndex: number) {
+        console.log("checkResult", moveIndex);
+        if (moveIndex < this.roadLength) {
+            if (this._road[moveIndex] == BlockType.BT_NONE) {   //跳到了空方块上
+                this.titleLabel.string = "掉坑里了"
+                this.stepLabel.string = moveIndex.toString();
+                this.resultMenu.active = true;
+            }
+        } else {    // 跳过了最大长度            
+            this.titleLabel.string = "成功通过"
+            this.stepLabel.string = moveIndex.toString();
+            this.resultMenu.active = true;
+        }
     }
 
     update(deltaTime: number) {
@@ -59,6 +82,7 @@ export class GameManager extends Component {
         if (this.stepLabel) {
             this.stepLabel.string = '0';
         }
+        this.playerController.reset();
     }
 
     startPlaying() {
@@ -84,6 +108,7 @@ export class GameManager extends Component {
     }
 
     onRestartButtonClicked() {
+        this.init();
         this.startPlaying();
     }
 
