@@ -50,16 +50,22 @@ export class GameManager extends Component {
 
     checkResult(moveIndex: number) {
         console.log("checkResult", moveIndex);
-        if (moveIndex < this.roadLength) {
+        // 检查除了最后一个，其他都不能跳空
+        if (moveIndex < this.roadLength - 1) {
             if (this._road[moveIndex] == BlockType.BT_NONE) {   //跳到了空方块上
                 this.titleLabel.string = "掉坑里了"
                 this.stepLabel.string = moveIndex.toString();
                 this.resultMenu.active = true;
+                this.resultMenu.position = this.playerController.node.position
+                this.playerController.setInputActive(false)
             }
-        } else {    // 跳过了最大长度            
+        } else {
+            // 跳到了最后一个石头
             this.titleLabel.string = "成功通过"
             this.stepLabel.string = moveIndex.toString();
             this.resultMenu.active = true;
+            this.resultMenu.position = this.playerController.node.position
+            this.playerController.setInputActive(false)
         }
     }
 
@@ -119,7 +125,8 @@ export class GameManager extends Component {
 
         for (let i = 1; i < this.roadLength; i++) {
             // 如果前一个是坑，则当前必须生成石头，不然角色就肯定跳不过去
-            if (this._road[i - 1] === BlockType.BT_NONE) {
+            // 如果是最后一个，也必须生成石头，不然角色就跳不过去
+            if (this._road[i - 1] === BlockType.BT_NONE || i === this.roadLength - 1) {
                 this._road.push(BlockType.BT_STONE);
             } else {
                 // 随机生成石头或者是坑
